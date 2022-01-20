@@ -32,7 +32,7 @@ class Car {
                 break;
 
             case "Lada": 
-            document.getElementById("ladaInfo").innerHTML = `Car: ${this.brand} | Speed: ${this.speed} km/t`
+                document.getElementById("ladaInfo").innerHTML = `Car: ${this.brand} | Speed: ${this.speed} km/t`
                 break;
         
             default: 
