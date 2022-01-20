@@ -1,0 +1,4 @@
+.tmp.driveupload
+*/*.zip
+*/node_modules/
+LICENSE
