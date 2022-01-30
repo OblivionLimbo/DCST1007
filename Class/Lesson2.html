@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2</title>
+</head>
+<body>
+    <div id="outputData"></div>
+    <div id="outputData2"></div>
+    <button onclick="showNorwegianDate()">Button</button>
+    <script>
+        class Person {
+            constructor(name,weight,height){
+                this.name = name;
+                this.weight = weight;
+
+                if(height < 10){
+                    this.height = height * 100;
+                } else {
+                    this.height = height;
+                }
+            }
+            get name() {
+                    return this._name;
+                }
+            set name(value){
+                if(value.length < 4){
+                    alert("Name is too short")
+                    return;
+                } else {
+                    this._name = value;
+                }
+            }
+        }
+
+        class Customer {
+            constructor(){}
+        }
+        let x = new Customer(); // Hvis en klasse mangler konstruktør finnes det alltid en tom konstruktør uten innhold som gjør at du kan opprette et objekt uten innhold.
+        
+        class Pet {
+            constructor(name){
+                this.name = name;
+            }
+
+            speak(){
+                return " makes a sound";
+            }
+        }
+        
+        class Dog extends Pet {
+            speak() {
+                return " barks"
+            }
+        }
+        class Cat extends Pet {
+            speak(){
+                return " meows"
+            }
+        }
+
+        class Rottweiler extends Dog {
+            speak(){
+                return ` is a dog race and ${super.speak()}`
+            }
+        }
+
+        let d = new Dog("Fido")
+        let c = new Cat("James")
+        let r = new Rottweiler("Laura")
+
+        document.getElementById("outputData").innerHTML = `
+        ${d.name} ${d.speak()}, <br> 
+        and ${c.name} ${c.speak()} <br>
+        and ${r.name} ${r.speak()}`
+
+        class myDate extends Date {
+            constructor(){
+                super();
+            }
+
+            showDate(){ // Shows date in Norwegian
+                let months = ['Januar','Februar','Mars','April','Mai','Juni','Juli','August','September','Oktober','November','Desember'];
+
+                return `${this.getDate()}. ${months[this.getMonth()]} ${this.getFullYear()}.`
+            }
+        }
+
+        function showNorwegianDate(){
+            let todaysDate = new myDate();
+            document.getElementById("outputData2").innerHTML = `${todaysDate.showDate()}`
+        }
+    
+    </script>
+</body>
+</html>
