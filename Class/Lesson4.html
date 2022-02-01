@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <body>
+
+        <div id="utdata"></div>
+
+        <script>
+            let utdata = document.getElementById('utdata');
+
+            let erMammaGlad = true;
+
+            // Promise
+            let blirDetNyTelefon = new Promise(
+                function (resolve, reject) {
+                    if (erMammaGlad) {
+                        let telefon = {
+                            merke: 'Samsung',
+                            farge: 'sort'
+                        };
+                        resolve(telefon);
+                    } else {
+                        let grunn = new Error('mamma er ikke glad');
+                        reject(grunn);
+                    }
+                }
+            );
+
+            // 2nd promise
+            let showOff = function (telefon) {
+                return new Promise(
+                    function (resolve, reject) {
+                        let message = 'Hei. Jeg har fått en ny ' +
+                            telefon.farge + ' ' + telefon.merke + ' telefon av mamma!';
+
+                        resolve(message);
+                    }
+                );
+            };
+
+            // call our promise
+            let hvaSierMamma = function () {
+                utdata.innerHTML += "<br>Før jeg har spurt mamma";
+                blirDetNyTelefon
+                    .then(showOff) // chaining
+                    .then(function (fulfilled) {
+                        // jippi, du fikk ny telefon
+                        utdata.innerHTML += "<br>" + fulfilled;
+                    })
+                    .catch(function (error) {
+                        // ajaj, mamma kjøpte ikke telefon
+                        utdata.innerHTML += "<br>Det ble ingen telefon - " + error.message;
+                    });
+                utdata.innerHTML += "<br>Etter jeg har spurt mamma";
+            }
+
+            hvaSierMamma();
+        </script>
+    </body>
+
+</html>
