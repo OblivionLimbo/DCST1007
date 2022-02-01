@@ -5,9 +5,63 @@
 <meta name=author content=Oblivion>
 <meta name=viewport content=width=device-width, initial-scale=1>
 <title>OOP2</title>
-<style></style>
+<style>
+    #mother{
+        display:flex;
+        flex-flow:row;
+        width: fit-content;
+    }
+    #mother>div{
+        display: flex;
+        flex-flow:column;
+        justify-content: space-evenly;
+        height: 50vh;
+    }
+    #mother>div>div{
+        display: flex;
+        flex-flow:column;
+    }
+    #secondAccount{
+        visibility: hidden;
+    }
+    label[for=secondAccount]{
+        visibility: hidden;
+    }
+</style>
 </head>
 <body>
+    <div id="mother">
+        <div>
+            <div id="genericAccounts">
+                <button id="createGenericAccounts">Generate Accounts</button>
+                <button id="simulateActivty">Simulate Activity</button>
+            </div>
+            <div id="accountCreation">
+                Account Number <input id="id" placeholder="171.33.78192" type="text">
+                Name <input id="name" placeholder="Ola Nordman" type="text">
+                Balance <input id="balance" placeholder=0 value=0 type="number">
+                <button id="createAccount">Create Account</button>
+            </div>
+            <div id="accountOperations">
+                <select id="account"></select>
+                <select id="operation">
+                    <option value="withdraw">Withdraw</option>
+                    <option value="deposit">Deposit</option>
+                    <option value="transfer">Transfer</option>
+                </select>
+                <label for="amount">Amount: </label>
+                <input id="amount">
+                <label for="secondAccount" id="2label">Transfer to: </label>
+                <select id="secondAccount"></select>
+                <button id="confirmOperation">Confirm</button>
+            </div>  
+        </div>
+        <div id="logging">
+            Logging
+        </div>
+    </div>
+    
+    
 <script src="OOP2.js"></script>
 </body>
 </html>
