@@ -2,6 +2,9 @@ const output = document.getElementById("output")
 let accounts = [];
 class Account {
     constructor(id,name,balance){
+        if(isNaN(balance) || balance < 0){
+            this.write(`All balances need to be a number that is bigger or equal to zero`)
+        }
         this.id = id
         this.name = name
         this.balance = balance
@@ -9,20 +12,30 @@ class Account {
     }
     deposit(sum){
         this.balance += sum;
-        console.log(`${this.name} depositet ${sum}, and now has a balance of ${this.balance}`)
+        logging.innerHTML += `${this.name} deposited ${sum}, and now has a balance of ${this.balance} <br><br>`
     }
     withdraw(sum){
         if(sum > this.balance){
-            console.log(`You cannot withdraw more than you have in your account, your balance is ${this.balance}`)
+            logging.innerHTML += `${this.name} tried to withdraw ${sum}, but has insufficient funds, their balance is ${this.balance} <br><br>`
         }
         else{
             this.balance -= sum;
-            console.log(`${this.name} withdrew ${sum}, and now has a balance of ${this.balance}`)
+            logging.innerHTML += `${this.name} withdrew ${sum}, and now has a balance of ${this.balance} <br><br>`
         }
     }
-    accountInformation(){
-        console.log(`${this.name} has this account: ${this.id}, with a balance of ${this.balance}`)
+    transfer(to,sum){
+        if(this.balance < sum){
+            logging.innerHTML += `${this.name} tried to transfer ${sum} to ${to.name}, but they have insufficient funds<br><br>`;
+        }
+        else{
+            this.balance -= sum;
+            to.balance += sum;
+            logging.innerHTML += `${this.name} transferred ${sum} to ${to.name} <br><br>`;   
+        } 
     }
+    accountInformation(){
+        logging.innerHTML += `${this.name} has this account: ${this.id}, with a balance of ${this.balance} <br><br>`;
+    }    
 }
 
 class childAccount extends Account {
@@ -30,34 +43,92 @@ class childAccount extends Account {
         super(id,name,200)
     }
 }
-let petter,kari,lise;
 
+let count = 1;
+
+let lise,kari,petter;
+
+let liseCheck = document.getElementById("liseCheck");
+let kariCheck = document.getElementById("kariCheck");
+let petterCheck = document.getElementById("petterCheck")
 document.getElementById("createGenericAccounts").onclick = () => {
-    lise = new childAccount(1,"Lise Jensen");
-    kari = new Account(2,"Kari Hansen",895);
-    petter = new Account(3,"Petter Olsen",0);
+    if(liseCheck.checked){
+        lise = new childAccount(count,"Lise Jensen");
+        count += 1;
+    }
+    else{
+        lise = new Account(count,"Lise Jensen",Number(document.getElementById("liseAmount").value));
+        count += 1;
+    }
+    if(kariCheck.checked){
+        kari = new childAccount(count,"Kari Hansen");
+        count += 1;
+    }
+    else{
+        kari = new Account(count,"Kari Hansen",Number(document.getElementById("kariAmount").value));
+        count += 1;
+    }
+    if(petterCheck.checked){
+        petter = new childAccount(count,"Petter Olsen");
+        count += 1;
+    }
+    else{
+        petter = new Account(count,"Petter Olsen",Number(document.getElementById("petterAmount").value));
+        count += 1;
+    }
     lise.accountInformation()
     kari.accountInformation()
     petter.accountInformation()
 }
 
+let logging = document.getElementById("logging");
+
 document.getElementById("simulateActivty").onclick = () => {
+    logging.innerHTML += `10:30 - `
+    kari.withdraw(300)
+    logging.innerHTML += `11:00 - `
+    lise.deposit(4000)
+    logging.innerHTML += `11:00 - `
+    petter.deposit(3000)
+    logging.innerHTML += `12:15 - `
+    kari.transfer(petter,250)
+    logging.innerHTML += `17:30 - `
+    kari.withdraw(800)
 }
 
 document.getElementById("createAccount").onclick = () => {
     let id = document.getElementById("id").value;
     let name = document.getElementById("name").value;
     let balance = Number(document.getElementById("balance").value);
-    if(id == "" || name == ""){
-        console.log(`You need to insert an account number and name`);
+    if(id == "" || name == "" || id < count){
+        console.log(`You need to insert a valid name and an account number, that is not alreay taken`);
         return;
     }
-    else if(isNaN(balance) || balance < 0 || balance == e){
-        console.log(`You need to insert a number that is not negative, also it cannot be 'e'`);
+    else if(isNaN(balance) || balance < 0){
+        console.log(`You need to insert a number that is not negative`);
         return;
     }
     let x = new Account(id,name,balance)
     accounts.push(x);
+    updateAccounts();
+}
+
+let selAccount = document.getElementById("account");
+let sel2Account = document.getElementById("secondAccount")
+
+function updateAccounts(){
+    selAccount.innerHTML = "";
+    sel2Account.innerHTML = "";
+    for(let i = 0; i < accounts.length; i++){
+        let x = document.createElement("option")
+        let y = document.createElement("option")
+        x.innerText = `${accounts[i].id} | ${accounts[i].name}`
+        y.innerText = `${accounts[i].id} | ${accounts[i].name}`
+        x.value = accounts[i].id;
+        y.value = accounts[i].id;
+        selAccount.appendChild(x);
+        sel2Account.appendChild(y);
+    }
 }
 
 let operation = document.getElementById("operation");
@@ -73,3 +144,10 @@ operation.onchange = () => {
     }
 }
 
+document.getElementById("confirmOperation").onclick = () => {
+
+}
+
+document.getElementById("liseCheck").onchange = () => {
+    
+}

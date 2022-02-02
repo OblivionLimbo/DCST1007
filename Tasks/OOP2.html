@@ -15,11 +15,12 @@
         display: flex;
         flex-flow:column;
         justify-content: space-evenly;
-        height: 50vh;
+        height: fit-content;
     }
     #mother>div>div{
         display: flex;
         flex-flow:column;
+        margin: 2.5vh 0 2.5vh 0;
     }
     #secondAccount{
         visibility: hidden;
@@ -27,12 +28,43 @@
     label[for=secondAccount]{
         visibility: hidden;
     }
+    #logging{
+        margin-left: 5vw;
+        margin-top: 5vh;
+    }
+    p{
+        margin: 2vh 0 0 0;
+        font-size: 2.5vh;
+        font-weight: bold;
+    }
 </style>
 </head>
 <body>
     <div id="mother">
         <div>
             <div id="genericAccounts">
+                <div>
+                    <p>Lise</p>
+                    <label for="liseAmount">Balance:</label>
+                    <input id="liseAmount" value=0 type="number"> <br>
+                    <label for="liseCheck">Child:</label>
+                    <input type="checkbox" id="liseCheck" value="child" checked> <br>
+                </div>
+                <div>
+                    <p>Kari</p>
+                    <label for="kariAmount">Balance:</label>
+                    <input id="kariAmount" value=0 type="number"> <br>
+                    <label for="kariCheck">Child:</label>
+                    <input type="checkbox" id="kariCheck" value="child"> <br>
+                </div>
+                <div>
+                    <p>Petter</p> 
+                    <label for="petterAmount">Balance:</label>
+                    <input id="petterAmount" value=0 type="number"> <br>
+                    <label for="petterCheck">Child:</label>
+                    <input type="checkbox" id="petterCheck" value="child"> <br>
+                </div>
+                
                 <button id="createGenericAccounts">Generate Accounts</button>
                 <button id="simulateActivty">Simulate Activity</button>
             </div>
@@ -57,9 +89,10 @@
             </div>  
         </div>
         <div id="logging">
-            Logging
+        Logging <br>
         </div>
     </div>
+    
     
     
 <script src="OOP2.js"></script>
