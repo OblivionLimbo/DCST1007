@@ -72,6 +72,10 @@
                 Account Number <input id="id" placeholder="171.33.78192" type="text">
                 Name <input id="name" placeholder="Ola Nordman" type="text">
                 Balance <input id="balance" placeholder=0 value=0 type="number">
+                <div>
+                    <label for="accountCheck">Child:</label>
+                    <input type="checkbox" id="accountCheck" value="child"> <br>
+                </div>
                 <button id="createAccount">Create Account</button>
             </div>
             <div id="accountOperations">
@@ -82,7 +86,7 @@
                     <option value="transfer">Transfer</option>
                 </select>
                 <label for="amount">Amount: </label>
-                <input id="amount">
+                <input id="amount" type="number" value=0>
                 <label for="secondAccount" id="2label">Transfer to: </label>
                 <select id="secondAccount"></select>
                 <button id="confirmOperation">Confirm</button>

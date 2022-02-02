@@ -10,27 +10,27 @@ class Account {
         this.balance = balance
         // console.log(`${this.name} has this account: ${this.id}, with a balance of ${this.balance}`)
     }
-    deposit(sum){
+    deposit(sum,date){
         this.balance += sum;
-        logging.innerHTML += `${this.name} deposited ${sum}, and now has a balance of ${this.balance} <br><br>`
+        logging.innerHTML += `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()} - ${this.name} deposited ${sum}, and now has a balance of ${this.balance} <br><br>`
     }
-    withdraw(sum){
+    withdraw(sum,date){
         if(sum > this.balance){
-            logging.innerHTML += `${this.name} tried to withdraw ${sum}, but has insufficient funds, their balance is ${this.balance} <br><br>`
+            logging.innerHTML += `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()} - ${this.name} tried to withdraw ${sum}, but has insufficient funds, their balance is ${this.balance} <br><br>`
         }
         else{
             this.balance -= sum;
-            logging.innerHTML += `${this.name} withdrew ${sum}, and now has a balance of ${this.balance} <br><br>`
+            logging.innerHTML += `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()} - ${this.name} withdrew ${sum}, and now has a balance of ${this.balance} <br><br>`
         }
     }
-    transfer(to,sum){
+    transfer(to,sum,date){
         if(this.balance < sum){
-            logging.innerHTML += `${this.name} tried to transfer ${sum} to ${to.name}, but they have insufficient funds<br><br>`;
+            logging.innerHTML += `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()} - ${this.name} tried to transfer ${sum} to ${to.name}, but they have insufficient funds <br><br>`;
         }
         else{
             this.balance -= sum;
             to.balance += sum;
-            logging.innerHTML += `${this.name} transferred ${sum} to ${to.name} <br><br>`;   
+            logging.innerHTML += `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()} - ${this.name} transferred ${sum} to ${to.name} <br><br>`;   
         } 
     }
     accountInformation(){
@@ -84,16 +84,22 @@ document.getElementById("createGenericAccounts").onclick = () => {
 let logging = document.getElementById("logging");
 
 document.getElementById("simulateActivty").onclick = () => {
-    logging.innerHTML += `10:30 - `
-    kari.withdraw(300)
-    logging.innerHTML += `11:00 - `
-    lise.deposit(4000)
-    logging.innerHTML += `11:00 - `
-    petter.deposit(3000)
-    logging.innerHTML += `12:15 - `
-    kari.transfer(petter,250)
-    logging.innerHTML += `17:30 - `
-    kari.withdraw(800)
+    kari.withdraw(300,new Date(2022, 2, 4, 10, 30))
+    lise.deposit(4000,new Date(2022, 2, 4, 11, 00))
+    petter.deposit(3000,new Date(2022, 2, 4, 11, 00))
+    kari.transfer(petter,250,new Date(2022, 2, 4, 12, 15))
+    kari.withdraw(800,new Date(2022, 2, 4, 17, 30))
+}
+
+let accountCheck = document.getElementById("accountCheck");
+
+accountCheck.onchange = () => {
+    if(accountCheck.checked){
+        document.getElementById("balance").style.visibility = "hidden";
+    }
+    else{
+        document.getElementById("balance").style.visibility = "visible";
+    }
 }
 
 document.getElementById("createAccount").onclick = () => {
@@ -108,9 +114,15 @@ document.getElementById("createAccount").onclick = () => {
         console.log(`You need to insert a number that is not negative`);
         return;
     }
-    let x = new Account(id,name,balance)
-    accounts.push(x);
-    updateAccounts();
+    if(accountCheck.checked){
+        accounts.push(new childAccount(id,name));
+        updateAccounts();
+    }
+    else{
+        accounts.push(new Account(id,name,balance));
+        updateAccounts();
+    }
+    
 }
 
 let selAccount = document.getElementById("account");
@@ -145,9 +157,18 @@ operation.onchange = () => {
 }
 
 document.getElementById("confirmOperation").onclick = () => {
-
-}
-
-document.getElementById("liseCheck").onchange = () => {
-    
+    if(operation.value == "withdraw"){
+        (accounts.find(({id}) => id === document.getElementById("account").value)).withdraw(Number(document.getElementById("amount").value),new Date());
+    }   
+    else if(operation.value == "deposit"){
+        (accounts.find(({id}) => id === document.getElementById("account").value)).deposit(Number(document.getElementById("amount").value),new Date());
+    }
+    else if(operation.value == "transfer"){
+        if(document.getElementById("account").value == document.getElementById("secondAccount").value){
+            logging.innerHTML += `You cannot transfer points to the same account`
+        }
+        else{
+            (accounts.find(({id}) => id === document.getElementById("account").value)).transfer(accounts.find(({id}) => id === document.getElementById("secondAccount").value),Number(document.getElementById("amount").value),new Date());
+        }
+    }
 }
