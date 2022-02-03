@@ -158,17 +158,28 @@ operation.onchange = () => {
 
 document.getElementById("confirmOperation").onclick = () => {
     if(operation.value == "withdraw"){
-        (accounts.find(({id}) => id === document.getElementById("account").value)).withdraw(Number(document.getElementById("amount").value),new Date());
+        (accounts.find
+            (({id}) => id === document.getElementById("account").value))
+            .withdraw(Number(document.getElementById("amount").value)
+            ,new Date());
     }   
     else if(operation.value == "deposit"){
-        (accounts.find(({id}) => id === document.getElementById("account").value)).deposit(Number(document.getElementById("amount").value),new Date());
+        (accounts.find
+            (({id}) => id === document.getElementById("account").value))
+            .deposit(Number(document.getElementById("amount").value)
+            ,new Date());
     }
     else if(operation.value == "transfer"){
         if(document.getElementById("account").value == document.getElementById("secondAccount").value){
             logging.innerHTML += `You cannot transfer points to the same account`
         }
         else{
-            (accounts.find(({id}) => id === document.getElementById("account").value)).transfer(accounts.find(({id}) => id === document.getElementById("secondAccount").value),Number(document.getElementById("amount").value),new Date());
+            (accounts.find
+                (({id}) => id === document.getElementById("account").value))
+                .transfer(accounts.find(({id}) => id === document.getElementById("secondAccount")
+                .value)
+                ,Number(document.getElementById("amount").value)
+                ,new Date());
         }
     }
 }
