@@ -1,4 +1,4 @@
-const output = document.getElementById("output")
+const logging = document.getElementById("logging")
 let accounts = [];
 let hours;
 let minutes;
@@ -12,7 +12,7 @@ class Account {
             console.log(`Your name must be a real name longer than 1 character`)
             return;
         }
-        if(id < 1){
+        if(id < count){
             console.log(`Your Account ID cannot be less than 1`)
             return;
         }
@@ -25,43 +25,38 @@ class Account {
         this.balance += sum;
         date.getHours() < 10 ? hours = "0" + date.getHours(): hours = date.getHours()
         date.getMinutes() < 10 ? minutes = "0" + date.getMinutes(): minutes = date.getMinutes()
-        logging.innerText += 
-        `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${hours}:${minutes} 
+        return`${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${hours}:${minutes} 
         ${this.name} deposited ${sum}, and now has a balance of ${this.balance} \n\n`
     }
     withdraw(sum,date){
             date.getHours() < 10 ? hours = "0" + date.getHours(): hours = date.getHours()
             date.getMinutes() < 10 ? minutes = "0" + date.getMinutes(): minutes = date.getMinutes()
         if(sum > this.balance){
-            logging.innerText += 
-            `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${hours}:${minutes} 
+            return `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${hours}:${minutes} 
             ${this.name} tried to withdraw ${sum}, but has insufficient funds, their balance is ${this.balance} \n\n`
         }
         else{
             this.balance -= sum;
-            logging.innerText += 
-            `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${hours}:${minutes} 
-            - ${this.name} withdrew ${sum}, and now has a balance of ${this.balance} \n\n`
+            return `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${hours}:${minutes} 
+            ${this.name} withdrew ${sum}, and now has a balance of ${this.balance} \n\n`
         }
     }
     transfer(to,sum,date){
             date.getHours() < 10 ? hours = "0" + date.getHours(): hours = date.getHours()
             date.getMinutes() < 10 ? minutes = "0" + date.getMinutes(): minutes = date.getMinutes()
         if(this.balance < sum){
-            logging.innerText += 
-            `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${hours}:${minutes}
+            return `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${hours}:${minutes}
              ${this.name} tried to transfer ${sum} to ${to.name}, but they have insufficient funds, they currently have ${this.balance} \n\n`;
         }
         else{
             this.balance -= sum;
             to.balance += sum;
-            logging.innerText += 
-            `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${hours}:${minutes} 
-            - ${this.name} transferred ${sum} to ${to.name} \n\n`;   
+            return`${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${hours}:${minutes} 
+            ${this.name} transferred ${sum} to ${to.name} \n\n`;   
         } 
     }
     accountInformation(){
-        logging.innerText += `${this.name} has this account: ${this.id}, with a balance of ${this.balance} \n\n`;
+        return `${this.name} has this account: ${this.id}, with a balance of ${this.balance} \n\n`;
     }    
 }
 
@@ -71,19 +66,25 @@ class childAccount extends Account {
     }
 }
 
-let count = 1;
-
-let lise,kari,petter;
+let lise,kari,petter,count;
 
 let liseCheck = document.getElementById("liseCheck");
 let kariCheck = document.getElementById("kariCheck");
 let petterCheck = document.getElementById("petterCheck")
 document.getElementById("createGenericAccounts").onclick = () => {
+    logging.innerHTML = "";
+    document.getElementById("simulateActivty").style.visibility = "visible"
+    document.getElementById("createGenericAccounts").style.visibility = "hidden"
+    lise = ""
+    kari = ""
+    petter = ""
+    count = 0;
     if(Number(document.getElementById("liseAmount").value) < 0
     || Number(document.getElementById("kariAmount").value) < 0 
     || Number(document.getElementById("petterAmount").value) < 0){
         console.log(`The amount of money in any account cannot be below zero`)
     }
+    count += 1;
     liseCheck.checked ? 
     lise = new childAccount(count,"Lise Jensen") :
     lise = new Account(count,"Lise Jensen",Number(document.getElementById("liseAmount").value));
@@ -95,20 +96,19 @@ document.getElementById("createGenericAccounts").onclick = () => {
     petterCheck.checked ? 
     petter = new childAccount(count,"Petter Olsen") :
     petter = new Account(count,"Petter Olsen",Number(document.getElementById("petterAmount").value));
-    count += 1;
-    lise.accountInformation()
-    kari.accountInformation()
-    petter.accountInformation()
+    logging.innerText += lise.accountInformation()
+    logging.innerText += kari.accountInformation()
+    logging.innerText += petter.accountInformation()
 }
 
-let logging = document.getElementById("logging");
-
 document.getElementById("simulateActivty").onclick = () => {
-    kari.withdraw(300,new Date(2022, 2, 4, 10, 30))
-    lise.deposit(4000,new Date(2022, 2, 4, 11, 00))
-    petter.deposit(3000,new Date(2022, 2, 4, 11, 00))
-    kari.transfer(petter,250,new Date(2022, 2, 4, 12, 15))
-    kari.withdraw(800,new Date(2022, 2, 4, 17, 30))
+    document.getElementById("simulateActivty").style.visibility = "hidden"
+    document.getElementById("createGenericAccounts").style.visibility = "visible"
+    logging.innerText += kari.withdraw(300,new Date(2022, 2, 4, 10, 30))
+    logging.innerText += lise.deposit(4000,new Date(2022, 2, 4, 11, 00))
+    logging.innerText += petter.deposit(3000,new Date(2022, 2, 4, 11, 00))
+    logging.innerText += kari.transfer(petter,250,new Date(2022, 2, 4, 12, 15))
+    logging.innerText += kari.withdraw(800,new Date(2022, 2, 4, 17, 30))
 }
 
 // Extra work not part of the task > creating accounts and 
