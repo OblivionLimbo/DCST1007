@@ -1,9 +1,20 @@
 const output = document.getElementById("output")
 let accounts = [];
+let hours;
+let minutes;
 class Account {
     constructor(id,name,balance){
         if(isNaN(balance) || balance < 0){
-            this.write(`All balances need to be a number that is bigger or equal to zero`)
+            console.log(`All balances need to be a number that is bigger or equal to zero`)
+            return;
+        }
+        if(name == "" || name.length <= 1){
+            console.log(`Your name must be a real name longer than 1 character`)
+            return;
+        }
+        if(id < 1){
+            console.log(`Your Account ID cannot be less than 1`)
+            return;
         }
         this.id = id
         this.name = name
@@ -12,29 +23,45 @@ class Account {
     }
     deposit(sum,date){
         this.balance += sum;
-        logging.innerHTML += `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()} - ${this.name} deposited ${sum}, and now has a balance of ${this.balance} <br><br>`
+        date.getHours() < 10 ? hours = "0" + date.getHours(): hours = date.getHours()
+        date.getMinutes() < 10 ? minutes = "0" + date.getMinutes(): minutes = date.getMinutes()
+        logging.innerText += 
+        `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${hours}:${minutes} 
+        ${this.name} deposited ${sum}, and now has a balance of ${this.balance} \n\n`
     }
     withdraw(sum,date){
+            date.getHours() < 10 ? hours = "0" + date.getHours(): hours = date.getHours()
+            date.getMinutes() < 10 ? minutes = "0" + date.getMinutes(): minutes = date.getMinutes()
         if(sum > this.balance){
-            logging.innerHTML += `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()} - ${this.name} tried to withdraw ${sum}, but has insufficient funds, their balance is ${this.balance} <br><br>`
+            logging.innerText += 
+            `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${hours}:${minutes} 
+            ${this.name} tried to withdraw ${sum}, but has insufficient funds, their balance is ${this.balance} \n\n`
         }
         else{
             this.balance -= sum;
-            logging.innerHTML += `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()} - ${this.name} withdrew ${sum}, and now has a balance of ${this.balance} <br><br>`
+            logging.innerText += 
+            `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${hours}:${minutes} 
+            - ${this.name} withdrew ${sum}, and now has a balance of ${this.balance} \n\n`
         }
     }
     transfer(to,sum,date){
+            date.getHours() < 10 ? hours = "0" + date.getHours(): hours = date.getHours()
+            date.getMinutes() < 10 ? minutes = "0" + date.getMinutes(): minutes = date.getMinutes()
         if(this.balance < sum){
-            logging.innerHTML += `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()} - ${this.name} tried to transfer ${sum} to ${to.name}, but they have insufficient funds <br><br>`;
+            logging.innerText += 
+            `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${hours}:${minutes}
+             ${this.name} tried to transfer ${sum} to ${to.name}, but they have insufficient funds, they currently have ${this.balance} \n\n`;
         }
         else{
             this.balance -= sum;
             to.balance += sum;
-            logging.innerHTML += `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()} - ${this.name} transferred ${sum} to ${to.name} <br><br>`;   
+            logging.innerText += 
+            `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}, ${hours}:${minutes} 
+            - ${this.name} transferred ${sum} to ${to.name} \n\n`;   
         } 
     }
     accountInformation(){
-        logging.innerHTML += `${this.name} has this account: ${this.id}, with a balance of ${this.balance} <br><br>`;
+        logging.innerText += `${this.name} has this account: ${this.id}, with a balance of ${this.balance} \n\n`;
     }    
 }
 
@@ -52,30 +79,23 @@ let liseCheck = document.getElementById("liseCheck");
 let kariCheck = document.getElementById("kariCheck");
 let petterCheck = document.getElementById("petterCheck")
 document.getElementById("createGenericAccounts").onclick = () => {
-    if(liseCheck.checked){
-        lise = new childAccount(count,"Lise Jensen");
-        count += 1;
+    if(Number(document.getElementById("liseAmount").value) < 0
+    || Number(document.getElementById("kariAmount").value) < 0 
+    || Number(document.getElementById("petterAmount").value) < 0){
+        console.log(`The amount of money in any account cannot be below zero`)
     }
-    else{
-        lise = new Account(count,"Lise Jensen",Number(document.getElementById("liseAmount").value));
-        count += 1;
-    }
-    if(kariCheck.checked){
-        kari = new childAccount(count,"Kari Hansen");
-        count += 1;
-    }
-    else{
-        kari = new Account(count,"Kari Hansen",Number(document.getElementById("kariAmount").value));
-        count += 1;
-    }
-    if(petterCheck.checked){
-        petter = new childAccount(count,"Petter Olsen");
-        count += 1;
-    }
-    else{
-        petter = new Account(count,"Petter Olsen",Number(document.getElementById("petterAmount").value));
-        count += 1;
-    }
+    liseCheck.checked ? 
+    lise = new childAccount(count,"Lise Jensen") :
+    lise = new Account(count,"Lise Jensen",Number(document.getElementById("liseAmount").value));
+    count += 1;
+    kariCheck.checked ? 
+    kari = new childAccount(count,"Kari Hansen") :
+    kari = new Account(count,"Kari Hansen",Number(document.getElementById("kariAmount").value));
+    count += 1;
+    petterCheck.checked ? 
+    petter = new childAccount(count,"Petter Olsen") :
+    petter = new Account(count,"Petter Olsen",Number(document.getElementById("petterAmount").value));
+    count += 1;
     lise.accountInformation()
     kari.accountInformation()
     petter.accountInformation()
@@ -90,6 +110,8 @@ document.getElementById("simulateActivty").onclick = () => {
     kari.transfer(petter,250,new Date(2022, 2, 4, 12, 15))
     kari.withdraw(800,new Date(2022, 2, 4, 17, 30))
 }
+
+// Extra work not part of the task > creating accounts and 
 
 let accountCheck = document.getElementById("accountCheck");
 
@@ -158,28 +180,27 @@ operation.onchange = () => {
 
 document.getElementById("confirmOperation").onclick = () => {
     if(operation.value == "withdraw"){
-        (accounts.find
-            (({id}) => id === document.getElementById("account").value))
-            .withdraw(Number(document.getElementById("amount").value)
-            ,new Date());
+        (accounts.find(({id}) => id === document.getElementById("account")
+        .value))
+        .withdraw(Number(document.getElementById("amount").value)
+        ,new Date());
     }   
     else if(operation.value == "deposit"){
-        (accounts.find
-            (({id}) => id === document.getElementById("account").value))
-            .deposit(Number(document.getElementById("amount").value)
-            ,new Date());
+        (accounts.find(({id}) => id === document.getElementById("account")
+        .value))
+        .deposit(Number(document.getElementById("amount").value)
+        ,new Date());
     }
     else if(operation.value == "transfer"){
         if(document.getElementById("account").value == document.getElementById("secondAccount").value){
             logging.innerHTML += `You cannot transfer points to the same account`
         }
         else{
-            (accounts.find
-                (({id}) => id === document.getElementById("account").value))
-                .transfer(accounts.find(({id}) => id === document.getElementById("secondAccount")
-                .value)
-                ,Number(document.getElementById("amount").value)
-                ,new Date());
+            (accounts.find(({id}) => id === document.getElementById("account")
+            .value))
+            .transfer(accounts.find(({id}) => id === document.getElementById("secondAccount").value)
+            ,Number(document.getElementById("amount").value)
+            ,new Date());
         }
     }
 }
