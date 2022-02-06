@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3</title>
+</head>
+<body>
+    <canvas id="canvas" height="400" width="600"></canvas>
+    <script>
+
+        let canvas = document.getElementById("canvas");
+        let ctx = canvas.getContext("2d");
+        canvas.addEventListener("mousedown",mouseclick,false)
+        canvas.addEventListener("mousemove",moveMouse,false);
+
+        class Bubble {
+            constructor(x,y,r,colour){
+                this.x = x;
+                this.y = y;
+                this.r = r;
+                this.colour = "green";
+            }
+            move(){
+                this.x = this.x + Math.floor(Math.random() * 10 - 5);
+                this.y = this.y + Math.floor(Math.random() * 10 - 5);
+            }
+            show(){
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.r, 0, 2*Math.PI);
+                ctx.fillStyle = this.colour;
+                ctx.fill();
+                ctx.strokeStyle = "black";
+                ctx.stroke();
+            }
+            contains(x,y){
+                let d = Math.sqrt((this.x - x)*(this.x - x) + (this.y - y)*(this.y - y))
+                if(d < this.r){
+                    return true;
+                } else{
+                    return false;
+                }
+            }
+        }
+
+        // let b1 = new Bubble(200,150,40)
+        // let b2 = new Bubble(150,200,20)
+
+        let bubbles = []
+
+        for(let i = 0; i < 10; i++){
+            let x = Math.floor(Math.random() * canvas.width);
+            let y = Math.floor(Math.random() * canvas.height);
+            let r = Math.floor(Math.random()*40 + 10);
+            bubbles[i] = new Bubble(x,y,r);
+        }
+
+        // let boble = {
+        //     x: 100,
+        //     y: 75
+        // }
+
+        // function show(){
+        //     ctx.beginPath();
+        //     ctx.arc(boble.x, boble.y, 25, 0, 2*Math.PI)
+        //     ctx.strokeStyle = "black"
+        //     ctx.stroke()
+        // }
+
+        // function move(){
+        //     boble.x = boble.x + Math.floor(Math.random() * 10 - 5);
+        //     boble.y = boble.y + Math.floor(Math.random() * 10 - 5);
+        // }
+
+        function reset() {
+            ctx.fillStyle = "white"; 
+            ctx.fillRect(0,0,canvas.width,canvas.height)
+        }
+
+        function draw() {
+            reset();
+            for(i = 0; i < bubbles.length; i++){
+                bubbles[i].move()
+                bubbles[i].show()
+            }
+        }
+
+        setInterval(() => {
+            draw()
+        }, 100);
+
+        function moveMouse(event){
+            for(let i = 0; i < bubbles.length; i++){
+                if(bubbles[i].contains(event.clientX,event.clientY)){
+                    bubbles[i].colour = "red"
+                }else{
+                    bubbles[i].colour = "green"
+                }
+            }
+        }
+        
+        function mouseclick(event){
+
+            let chosenBubble = false;
+
+            for(let i = 0; i < bubbles.length; i++){
+                if(bubbles[i].contains(event.clientX,event.clientY)){
+                    bubbles.splice(i,1)
+                    chosenBubble = true;
+                }
+            }
+            if(chosenBubble == false){
+                let r = Math.floor(Math.random() * 40 + 10)
+                let b = new Bubble(event.clientX, event.clientY,r)
+                bubbles.push(b)
+            }
+        }
+        
+
+    </script>
+</body>
+</html>
