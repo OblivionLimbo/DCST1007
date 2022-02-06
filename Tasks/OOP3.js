@@ -172,8 +172,8 @@
                     bubbles.push(b)
                 }
                 else if (rectangle) {
-                    let w = Math.floor(Math.random() * 40 + 10);
-                    let h = Math.floor(Math.random() * 40 + 10);
+                    let w = Math.floor(Math.random() * 60 + 20);
+                    let h = Math.floor(Math.random() * 60 + 20);
                     let b = new Rect(event.clientX, event.clientY, w,h)
                     rect.push(b)
                 }
