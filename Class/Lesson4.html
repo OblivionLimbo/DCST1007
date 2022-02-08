@@ -5,66 +5,64 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Lesson 4</title>
 </head>
 
 <body>
+    <div id="utdata"></div>
+    <script>
+        let utdata = document.getElementById('utdata');
+        var erMammaGlad = true;
 
-    <body>
+        // First Promise
+        var blirDetNyTelefon = new Promise(
+            (resolve, reject) => {
+                if (erMammaGlad) {
+                    var telefon = {
+                        merke: 'Samsung',
+                        farge: 'Svart'
+                    };
+                    resolve(telefon);
+                } else {
+                    var grunn = new Error('Mamma er ikke glad');
+                    reject(grunn);
+                }
+            }
+        );
 
-        <div id="utdata"></div>
+        // Second Promise
+        async function showOff(telefon) {
+            return new Promise(
+                (resolve, reject) => {
+                    let message = 'Hei. Jeg har fått en ny ' 
+                    + telfon.farge + ' ' + telefon.merke + 'telefon av mamma!';
 
-        <script>
-            let utdata = document.getElementById('utdata');
-
-            let erMammaGlad = true;
-
-            // Promise
-            let blirDetNyTelefon = new Promise(
-                function (resolve, reject) {
-                    if (erMammaGlad) {
-                        let telefon = {
-                            merke: 'Samsung',
-                            farge: 'sort'
-                        };
-                        resolve(telefon);
-                    } else {
-                        let grunn = new Error('mamma er ikke glad');
-                        reject(grunn);
-                    }
+                    resolve(message);
                 }
             );
+        };
 
-            // 2nd promise
-            let showOff = function (telefon) {
-                return new Promise(
-                    function (resolve, reject) {
-                        let message = 'Hei. Jeg har fått en ny ' +
-                            telefon.farge + ' ' + telefon.merke + ' telefon av mamma!';
+        // Call your promise
+        async function hvaSierMamma() {
+            utdata.innerHTML += "<br>Før jeg har spurt mamma";
 
-                        resolve(message);
-                    }
-                );
-            };
+            try {
+                let telefon = await blirDetNyTelefon;
+                let beskjed = await showOff(telefon);
 
-            // call our promise
-            let hvaSierMamma = function () {
-                utdata.innerHTML += "<br>Før jeg har spurt mamma";
-                blirDetNyTelefon
-                    .then(showOff) // chaining
-                    .then(function (fulfilled) {
-                        // jippi, du fikk ny telefon
-                        utdata.innerHTML += "<br>" + fulfilled;
-                    })
-                    .catch(function (error) {
-                        // ajaj, mamma kjøpte ikke telefon
-                        utdata.innerHTML += "<br>Det ble ingen telefon - " + error.message;
-                    });
-                utdata.innerHTML += "<br>Etter jeg har spurt mamma";
+                utdata.innerHTML += "<br>" + beskjed;
+
+            } catch (error) {
+                // ajaj, mamma kjøpte ikke telefon
+                utdata.innerHtml += "Det ble ingen ny telefon - " + error.message;
             }
+            utdata.innerHTML += "<br> Etter jeg har spurt mamma";
+        }
 
-            hvaSierMamma();
-        </script>
-    </body>
+        (async () => {
+            await hvaSierMamma();
+        })();
+    </script>
+</body>
 
 </html>
