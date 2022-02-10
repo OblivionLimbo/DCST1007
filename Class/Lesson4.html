@@ -12,7 +12,7 @@
     <div id="utdata"></div>
     <script>
         let utdata = document.getElementById('utdata');
-        var erMammaGlad = true;
+        var erMammaGlad = false;
 
         // First Promise
         var blirDetNyTelefon = new Promise(
@@ -35,7 +35,7 @@
             return new Promise(
                 (resolve, reject) => {
                     let message = 'Hei. Jeg har fått en ny ' 
-                    + telfon.farge + ' ' + telefon.merke + 'telefon av mamma!';
+                    + telefon.farge + ' ' + telefon.merke + 'telefon av mamma!';
 
                     resolve(message);
                 }
