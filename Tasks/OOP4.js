@@ -86,8 +86,9 @@ async function sortLetters(word) {
 async function bigLettersSorted(word){
     try {
         let upper = await makeUppercaseLetters(word);
+        console.log(`The array in uppercase: ${upper}`)
         let result = await sortLetters(upper);
-        console.log(`The array in uppercase: ${upper}, and sorted ${result}`)
+        console.log(`The array sorted and uppercase: ${result}`)
     } catch (error) {
         console.log(new Error(error.message))
     }
@@ -99,3 +100,69 @@ bigLettersSorted(["Adding","a","number","like",4,"won't","work"])
 bigLettersSorted(["This","will","work","because","it","is","an","array","of","strings"])
 
 // 3 - Github avatar
+
+// The fast version
+document.getElementById("gitBtn").onclick = () => {
+    let user = document.getElementById("user").value;
+    gitHubProfile(user);
+}
+
+async function gitHubProfile(user){
+            try {
+                let url = await fetch(`https://api.github.com/users/${user}`);
+                if(url.status != 200){
+                    throw(`Unable to get avatar of ${user}, please try a different name`)
+                }
+                let obj = await url.json();
+                document.getElementById("img").src = obj.avatar_url
+                document.getElementById("ans3").innerHTML = 
+                `This is the avatar of ${obj.login}, their Github link is <a href=${obj.html_url} target="_blank">here</a>` 
+                // console.log(obj)
+            } catch (error) {
+                document.getElementById("ans3").innerHTML = error
+                console.log(new Error(error.message)) 
+            }
+        }
+
+// The Promise Nested Version
+
+let url = new Promise(
+    (resolve,reject) => {
+        let url = fetch("https://api.github.com/users/github")
+        resolve(url);
+    }
+)
+
+async function getJSON(url){
+    return new Promise(
+        (resolve,reject) => {
+            if(url){
+                let json = url.json()
+                resolve(json);
+            }
+            else{
+                reject(new Error('Unable to get URL'))
+            }
+        }
+    )
+
+}
+
+async function displayImage(){
+    try {
+        let a = await url;
+        if(a.status != 200){
+            throw(`Unable to get avatar, try a different user`)
+        }
+        let j = await getJSON(a);
+        document.getElementById("img2").src = j.avatar_url
+        document.getElementById("ans4").innerHTML = 
+        `This is the avatar of ${j.login}, their Github link is <a href=${j.html_url} target="_blank">here</a>` 
+    } catch (error) {
+        document.getElementById("ans4").innerHTML = error
+    }
+}
+
+(async () => {
+    await displayImage();
+})();
