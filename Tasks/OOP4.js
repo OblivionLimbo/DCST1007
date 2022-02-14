@@ -119,6 +119,7 @@ async function gitHubProfile(user){
                 `This is the avatar of ${obj.login}, their Github link is <a href=${obj.html_url} target="_blank">here</a>` 
                 // console.log(obj)
             } catch (error) {
+                document.getElementById("img").src = ""
                 document.getElementById("ans3").innerHTML = error
                 console.log(new Error(error.message)) 
             }
