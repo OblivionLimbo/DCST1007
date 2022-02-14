@@ -113,7 +113,7 @@ async function gitHubProfile(user){
                 if(url.status != 200){
                     throw(`Unable to get avatar of ${user}, please try a different name`)
                 }
-                let obj = await url.json();
+                let obj = url.json();
                 document.getElementById("img").src = obj.avatar_url
                 document.getElementById("ans3").innerHTML = 
                 `This is the avatar of ${obj.login}, their Github link is <a href=${obj.html_url} target="_blank">here</a>` 
