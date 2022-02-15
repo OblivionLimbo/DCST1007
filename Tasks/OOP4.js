@@ -104,6 +104,7 @@ bigLettersSorted(["This","will","work","because","it","is","an","array","of","st
 // The fast version
 document.getElementById("gitBtn").onclick = () => {
     let user = document.getElementById("user").value;
+    console.log(user)
     gitHubProfile(user);
 }
 
@@ -111,13 +112,14 @@ async function gitHubProfile(user){
             try {
                 let url = await fetch(`https://api.github.com/users/${user}`);
                 if(url.status != 200){
+                    console.log(200);
                     throw(`Unable to get avatar of ${user}, please try a different name`)
                 }
-                let obj = url.json();
+                let obj = await url.json();
                 document.getElementById("img").src = obj.avatar_url
                 document.getElementById("ans3").innerHTML = 
                 `This is the avatar of ${obj.login}, their Github link is <a href=${obj.html_url} target="_blank">here</a>` 
-                // console.log(obj)
+                console.log(obj)
             } catch (error) {
                 document.getElementById("img").src = ""
                 document.getElementById("ans3").innerHTML = error
