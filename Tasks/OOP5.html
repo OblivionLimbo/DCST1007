@@ -9,20 +9,27 @@
     .niceTable{
         border-collapse: collapse;
         max-width: 90vw;
+        margin:auto;
     }
 
     .niceTable > tr,td,th {
+        width: 15vw;
         border: 2px solid black;
         margin: 5px;
         height: 10px;
         text-align: center;
-        padding: 5px;
+        padding: 2px;
+    }
+    .map {
+      height: 400px;
+      width: 100%;
     }
     </style>
 </head>
 <body>
     <div id="mountains"></div>
-    <div id="map"></div>
+    <div id="map" class="map"></div>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
     <script src="OOP5.js"></script>
 </body>
 </html>
