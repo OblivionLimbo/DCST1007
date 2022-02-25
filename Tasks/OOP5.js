@@ -4,6 +4,7 @@
     .catch(error => showError(error));
 
     function showError(error){
+        document.getElementById("error").style.display = "block";
         console.log(error);
     }
 

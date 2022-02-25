@@ -24,9 +24,20 @@
       height: 400px;
       width: 100%;
     }
+    #error{
+        display: none;
+    }
     </style>
 </head>
 <body>
+    <div id="error">
+        For å kunne se tabllen og hente ut .json filen må man kjøre filene på en webserver.<br>
+        Dette kan enten gjøres gjennom Python ved å skrive: <br>
+           <code>python3 -m http.server 8080</code> <br>
+        Eller node:<br>
+        <code>npx http-server</code> <br>
+        Filene kan nås gjennom localhost:8080
+    </div>
     <div id="mountains"></div>
     <div id="map" class="map"></div>
     <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
