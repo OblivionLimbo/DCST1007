@@ -1,4 +1,4 @@
 .tmp.driveupload
 */*.zip
-*/node_modules/
+*/node_modules
 LICENSE
