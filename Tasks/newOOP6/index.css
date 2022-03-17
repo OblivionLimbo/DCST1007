@@ -1,0 +1,26 @@
+.mother {
+    display: flex;
+    width: 100%;
+    justify-content: left;
+    flex-flow: row;
+  }
+
+  .child {
+    font-size: 3vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1vw 2.5vw 1vw 2.5vw;
+    text-decoration: none;
+    color: rgba(58, 58, 226, 0.877);
+    border: 0.1vw solid rgba(0, 0, 0, 0.5);
+  }
+  .info {
+    padding: 1vw 2.5vw 1vw 2.5vw;
+    background-color: rgba(211, 211, 211, 0.2);
+    border: 0.1vw solid rgba(0, 0, 0, 0.5);
+  }
+  #root{
+    width: fit-content;
+    height: fit-content;
+  }
