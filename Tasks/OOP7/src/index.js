@@ -61,23 +61,36 @@ class StudentDetails extends Component {
     if (!this.student) return null;
 
     return (
+      <div>
+      <p>Name: {this.student.name}</p>
+      <p>Email: {this.student.email}</p>
+      <h3>Study Program:</h3>
       <ul>
-        <li>Name: {this.student.name}</li>
-        <li>Email: {this.student.email}</li>
+        <NavLink to={'/program/' + this.student.studyProgramId}>{this.student.studyProgramName}</NavLink>
       </ul>
-    );
+    </div>
+  );
   }
 
   mounted() {
     pool.query(
-      'SELECT name, email FROM Students WHERE id=?',
+      'SELECT name, email, studyProgramId FROM Students WHERE id=?',
       [this.props.match.params.id],
       (error, results) => {
         if (error) return console.error(error); // If error, show error in console (in red text) and return
 
         this.student = results[0];
+
+
+        pool.query('SELECT name FROM StudyPrograms WHERE id=?',
+            [this.student.studyProgramId],
+            (error, results) => {
+              if (error) return console.error(error); // If error, show error in console (in red text) and return
+            this.student.studyProgramName = results[0].name;
+        });
       }
     );
+    
   }
 }
 class StudyProgramList extends Component {
@@ -105,14 +118,23 @@ class StudyProgramList extends Component {
 }
 class StudyProgramDetails extends Component {
   program = null;
+  students = [];
 
   render() {
     if (!this.program) return null;
     return (
-      <ul>
-        <li>Name: {this.program.name}</li>
-        <li>Code: {this.program.code}</li>
-      </ul>
+      <div>
+        <p>Tittel: {this.program.name}</p>
+        <p>Kode: {this.program.code}</p>
+        <h3>Studenter:</h3>
+        <ul>
+          {this.students.map((student) => (
+            <li key={student.id}>
+              <NavLink to={'/students/' + student.id}>{student.name}</NavLink>
+            </li>
+          ))}
+        </ul>
+      </div>
     );
   }
 
@@ -121,10 +143,16 @@ class StudyProgramDetails extends Component {
     [this.props.match.params.id],
       (error, results) => {
         if (error) return console.error(error); // If error, show error in console (in red text) and return
-          console.log(results)
+
         this.program = results[0];
       }
     );
+    pool.query('SELECT id, name FROM Students WHERE studyProgramId=?', 
+    [this.props.match.params.id],
+    (error, results) => {
+      if (error) return console.error(error); // If error, show error in console (in red text) and return
+      this.students = results;
+  });
   }
 }
 
