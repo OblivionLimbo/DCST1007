@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Example Application</title>
+    <link rel="stylesheet" href="bootstrap.min.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="bootstrap.min.js"></script>
+    <script>
+      window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = { isDisabled: true };
+      require('@babel/register');
+      require('../src/index.js');
+    </script>
+  </body>
+</html>
