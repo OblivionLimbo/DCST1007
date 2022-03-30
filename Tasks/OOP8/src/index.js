@@ -93,6 +93,8 @@ class StudentDetails extends Component {
 
 class StudentEdit extends Component {
   student = null;
+  
+  studyPrograms = [];
 
   render() {
     if (!this.student) return null;
@@ -111,6 +113,14 @@ class StudentEdit extends Component {
           value={this.student.email}
           onChange={(event) => (this.student.email = event.currentTarget.value)}
         />
+        <label>Study Program:</label>
+        <select value={this.student.studyProgramId} onChange={(event) => (this.student.studyProgramId = event.currentTarget.value)}>
+          {this.studyPrograms.map((studyProgram) => (
+            <option key={studyProgram.id} value={studyProgram.id}>
+              {studyProgram.name}
+            </option>
+          ))}
+        </select>
         <button type="button" onClick={this.save}>
           Save
         </button>
@@ -122,6 +132,9 @@ class StudentEdit extends Component {
   mounted() {
     studentService.getStudent(this.props.match.params.id, (student) => {
       this.student = student;
+    });
+    studyProgramService.getStudyPrograms((studyPrograms) => {
+      this.studyPrograms = studyPrograms;
     });
   }
 

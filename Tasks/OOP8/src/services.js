@@ -22,7 +22,6 @@ class StudentService {
         [id],(error, results) => {
           if (error) return console.error(error); // If error, show error in console (in red text) and return
           success(results[0]);
-          console.log('hei')
     
     pool.query('SELECT * FROM StudyPrograms WHERE id=?',
       [results[0].studyProgramId],(error, results) => {
@@ -34,8 +33,8 @@ class StudentService {
 
   updateStudent(student, success) {
     pool.query(
-      'UPDATE Students SET name=?, email=? WHERE id=?',
-      [student.name, student.email, student.id],
+      'UPDATE Students SET name=?, email=?, studyProgramId=? WHERE id=?',
+      [student.name, student.email, student.studyProgramId, student.id],
       (error, results) => {
         if (error) return console.error(error);
 
