@@ -66,7 +66,7 @@ class StudentDetails extends Component {
       <p>Email: {this.student.email}</p>
       <h3>Study Program:</h3>
       <ul>
-        <NavLink to={'/program/' + this.student.studyProgramId}>{this.student}</NavLink>
+        <NavLink to={'/program/' + this.student.studyProgramId}>{this.student.studyProgramName}</NavLink>
       </ul>
     </div>
   );
