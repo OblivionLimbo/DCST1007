@@ -75,8 +75,8 @@ class StudentDetails extends Component {
           </Row>
           <Row>
             <Column width={4}>Group:</Column>
-            <Column><NavLink to={'/group/' + this.student.groupId}>{this.group.name}</NavLink></Column>
-          </Row>
+         <Column><NavLink to={'/group/' + this.student.groupId}>{this.group.name}</NavLink></Column>
+       </Row>
         </Card>
         <Button.Light onClick={this.edit}>Edit</Button.Light>
       </div>
@@ -120,7 +120,8 @@ class StudentEdit extends Component {
             value={this.student.email}
             onChange={(event) => (this.student.email = event.currentTarget.value)}
           />
-          <Form.Label>Group</Form.Label>
+          <Form.Label>Group:</Form.Label>
+          <br />
             <select value={this.student.groupId} onChange={(event) => (this.student.groupId = event.currentTarget.value)}>
               {this.groups.map((groups) => (
                 <option key={groups.id} value={groups.id}>
@@ -128,6 +129,7 @@ class StudentEdit extends Component {
                 </option>
               ))}
             </select>
+          <br />
         </Card>
         <Row>
           <Column left>

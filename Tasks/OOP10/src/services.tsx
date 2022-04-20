@@ -98,8 +98,8 @@ class GroupService {
     });
   }
   
-  getLeader(id: number, success: (leader: string) => void) {
-    pool.query('SELECT name FROM Students WHERE id=?', [id], (error, results) => {
+  getLeader(id: number, success: (leaderId: string) => void) {
+    pool.query('SELECT * FROM Students WHERE id=?', [id], (error, results) => {
       if (error) return console.error(error);
       
       success(results[0]);

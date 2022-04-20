@@ -70,7 +70,7 @@ class StudentDetails extends Component<{ match: { params: { id: string } } }> {
           </Row>
           <Row>
             <Column width={2}>Group:</Column>
-            <Column><NavLink to={'/group/' + this.student.groupId}>{this.groupName}</NavLink></Column>
+            <Column><NavLink to={'/groups/' + this.student.groupId}>{this.groupName}</NavLink></Column>
           </Row>
         </Card>
         <Button.Light onClick={this.edit}>Edit</Button.Light>
@@ -94,6 +94,7 @@ class StudentDetails extends Component<{ match: { params: { id: string } } }> {
 
 class StudentEdit extends Component<{ match: { params: { id: string } } }> {
   student = new Student();
+  groups: Group[] = [];
 
   render() {
     return (
@@ -111,6 +112,14 @@ class StudentEdit extends Component<{ match: { params: { id: string } } }> {
             value={this.student.email}
             onChange={(event) => (this.student.email = event.currentTarget.value)}
           />
+          <Form.Label>Group:</Form.Label>
+          <br></br>
+            <select value={this.student.groupId} onChange={(event) => (this.student.groupId = parseInt(event.currentTarget.value))}>
+              {this.groups.map((group) => (
+                <option key={group.id} value={group.id}>{group.name}</option>
+              ))}
+            </select>
+          <br></br>
         </Card>
         <Row>
           <Column>
@@ -130,6 +139,9 @@ class StudentEdit extends Component<{ match: { params: { id: string } } }> {
   mounted() {
     studentService.getStudent(Number(this.props.match.params.id), (student) => {
       this.student = student;
+    });
+    groupService.getGroups((groups) => {
+      this.groups = groups;
     });
   }
 
@@ -170,9 +182,9 @@ class CreateStudent extends Component {
             value={this.student.email}
             onChange={(event) => (this.student.email = event.currentTarget.value)}
           />
-          <Form.Label>Group</Form.Label>
+          <Form.Label>Group:</Form.Label>
           <br></br>
-            <select value={this.student.groupId} onChange={(event) => (this.student.groupId = event.currentTarget.value)}>
+            <select value={this.student.groupId} onChange={(event) => (this.student.groupId = parseInt(event.currentTarget.value))}>
               {this.groups.map((groups) => (
                 <option key={groups.id} value={groups.id}>
                   {groups.name}
@@ -224,7 +236,7 @@ class GroupList extends Component <{ match: { params: { id: string } } }> {
           </Row>
         ))}
       </Card>
-      <Button.Success onClick={() => history.push('/group/create')}>Create New Group</Button.Success>
+      {/* <Button.Success onClick={() => history.push('/group/create')}>Create New Group</Button.Success> */}
      </>
     );
   }
@@ -239,11 +251,12 @@ class GroupList extends Component <{ match: { params: { id: string } } }> {
 class GroupDetails extends Component<{ match: { params: { id: string } } }> {
   group = new Group();
   members: Student[] = [];
-  leader: string = '';
+  leader: any = [];
   
   render() {
+    if (!this.group) return null;
+
     return (
-      <>
       <div>
         <Card title="Group details">
           <Row>
@@ -256,12 +269,11 @@ class GroupDetails extends Component<{ match: { params: { id: string } } }> {
           </Row>
           <Row>
             <Column width={2}>Leader:</Column>
-            <NavLink to={'/students/' + this.group.leaderId}>
-            <Column>{this.leader}</Column>
-            </NavLink>
+            <Column><NavLink to={'/students/' + this.group.leaderId} style={{textDecoration:'none'}}>{this.leader.name}</NavLink></Column>
           </Row>
+          <br></br>
           <Row>
-            <Column width={2}>Image:</Column>
+            <Column width={2}>Group Image:</Column>
             <Column><img src={this.group.groupImage}></img></Column>
           </Row>
           <br />
@@ -274,25 +286,22 @@ class GroupDetails extends Component<{ match: { params: { id: string } } }> {
                 </Column>
               </Row>
             ))}
-          </Row>
+          </Row> 
         </Card>
         <Button.Light onClick={this.edit}>Edit</Button.Light>
       </div>
-      </>
     );
   }
-
   mounted() {
     groupService.getGroup(Number(this.props.match.params.id), (group) => {
       this.group = group;
       groupService.getMembers(group.id, (students) => {
         this.members = students;
       });
+      groupService.getLeader(this.group.leaderId, (leader) => {
+        this.leader = leader;
+      });
     });
-    groupService.getLeader(Number(this.props.match.params.id), (leader) => {
-      this.leader = leader;
-    }
-    );
   }
 
   edit() {
@@ -318,7 +327,7 @@ class GroupEdit extends Component<{ match: { params: { id: number } } }> {
             onChange={(event) => (this.group.name = event.currentTarget.value)}/>
           <Form.Label>Leader:</Form.Label>
           <br></br>
-            <select value={this.group.leaderId} onChange={(event) => (this.group.leaderId = event.currentTarget.value)}>
+            <select value={this.group.leaderId} onChange={(event) => (this.group.leaderId = parseInt(event.currentTarget.value))}>
               {this.members.map((member) => (
                 <option key={member.id} value={member.id}>
                   {member.name}
@@ -365,61 +374,61 @@ class GroupEdit extends Component<{ match: { params: { id: number } } }> {
 
   save() {
     groupService.updateGroup(this.group, () => {
-      history.push('/group/' + this.props.match.params.id);
+      history.push('/groups/' + this.props.match.params.id);
     });
   }
   delete() {
     groupService.deleteGroup(this.group.id, () => {
-      history.push('/group');
-    });
-  }
-
-  cancel() {
-    history.push('/group/' + this.props.match.params.id);
-  }
-}
-
-class CreateGroup extends Component {
-  group = new Group();
-
-  render() {
-    return (
-      <div>
-        <Card title="Create group">
-          <Form.Label>Name:</Form.Label>
-          <Form.Input
-            type="text"
-            value={this.group.name}
-            onChange={(event) => (this.group.name = event.currentTarget.value)}
-          />
-          <Form.Label>Leader</Form.Label>
-
-          <Form.Label>Description</Form.Label>
-
-          <Form.Label>Image</Form.Label>
-        </Card>
-        <Row>
-          <Column>
-            <Button.Success onClick={this.save}>Save</Button.Success>
-          </Column>
-          <Column right>
-            <Button.Light onClick={this.cancel}>Cancel</Button.Light>
-          </Column>
-        </Row>
-      </div>
-    );
-  }
-  
-  save() {
-    groupService.createGroup(this.group, () => {
       history.push('/groups');
     });
   }
 
   cancel() {
-    history.push('/groups');
+    history.push('/groups/' + this.props.match.params.id);
   }
 }
+
+// class CreateGroup extends Component {
+//   group = new Group();
+
+//   render() {
+//     return (
+//       <div>
+//         <Card title="Create group">
+//           <Form.Label>Name:</Form.Label>
+//           <Form.Input
+//             type="text"
+//             value={this.group.name}
+//             onChange={(event) => (this.group.name = event.currentTarget.value)}
+//           />
+//           <Form.Label>Leader</Form.Label>
+
+//           <Form.Label>Description</Form.Label>
+
+//           <Form.Label>Image</Form.Label>
+//         </Card>
+//         <Row>
+//           <Column>
+//             <Button.Success onClick={this.save}>Save</Button.Success>
+//           </Column>
+//           <Column right>
+//             <Button.Light onClick={this.cancel}>Cancel</Button.Light>
+//           </Column>
+//         </Row>
+//       </div>
+//     );
+//   }
+  
+//   save() {
+//     groupService.createGroup(this.group, () => {
+//       history.push('/groups');
+//     });
+//   }
+
+//   cancel() {
+//     history.push('/groups');
+//   }
+// }
 
 
 ReactDOM.render(
@@ -434,9 +443,9 @@ ReactDOM.render(
         <Route exact path="/students/:id/edit" component={StudentEdit} />
         <Route exact path="/students/create" component={CreateStudent} />
         <Route exact path="/groups" component={GroupList} />
-        <Route exact path="/group/:id" component={GroupDetails} />
-        <Route exact path="/group/:id/edit" component={GroupEdit} />
-        <Route exact path="/group/create" component={CreateGroup} />
+        <Route exact path="/groups/:id" component={GroupDetails} />
+        <Route exact path="/groups/:id/edit" component={GroupEdit} />
+        {/* <Route exact path="/groups/create" component={CreateGroup} /> */}
       </div>
     </HashRouter>
   </div>,
