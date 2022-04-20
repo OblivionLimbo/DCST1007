@@ -40,7 +40,7 @@ class StudentList extends Component {
           </Row>
         ))}
       </Card>
-      <Button.Success onClick={() => history.push('/students/create')}>Create New Student</Button.Success>
+      <Button.Success onClick={() => history.push('/students/create')}>New Student</Button.Success>
      </>
     );
   }
