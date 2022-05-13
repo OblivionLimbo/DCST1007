@@ -8,8 +8,9 @@ export class App extends Component {
     return (
       <View style={{ flex: 1, justifyContent: 'center' }}>
         <h3>Translate text into emojis</h3>
-        <input type="text" value="Hello World" placeholder="Type something..."></input><button>Translate</button>
-        <Text>{moji.translate('Hello World')}</Text>
+        <input type="text" value="Hello World" placeholder="Type something..."></input>
+        <button>Translate</button>
+        <Text>{moji.translate('Hello')}</Text>
       </View>
     );
   }
