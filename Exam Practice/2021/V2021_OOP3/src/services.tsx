@@ -1,38 +1,83 @@
 import { pool } from './mysql-pool';
 
-export class Student {
+export class ChatRoom {
   id: number = 0;
-  name: string = '';
-  email: string = '';
+  title: string = '';
+  description: string = '';
 }
 
-class StudentService {
-  getStudents(success: (students: Student[]) => void) {
-    pool.query('SELECT * FROM Students', (error, results) => {
-      if (error) return console.error(error);
+export class ChatMessage {
+  text: string = '';
+  chatRoomId: number = 0;
+}
 
-      success(results);
+class ChatService {
+
+  getChatRooms(){
+    return new Promise<ChatRoom[]>((resolve, reject) => {
+      pool.query('SELECT * FROM ChatRooms', (error, results) => {
+        if (error) return reject(error);
+        resolve(results);
+      });
     });
   }
 
-  getStudent(id: number, success: (student: Student) => void) {
-    pool.query('SELECT * FROM Students WHERE id=?', [id], (error, results) => {
-      if (error) return console.error(error);
+  getChatRoom(id: number) {
+    return new Promise<ChatRoom>((resolve, reject) => {
+    pool.query('SELECT * FROM ChatRooms WHERE id=?', [id], (error, results) => {
+      if (error) return reject(error);
 
-      success(results[0]);
+      resolve(results[0]);
+    });
     });
   }
 
-  updateStudent(student: Student, success: () => void) {
-    pool.query(
-      'UPDATE Students SET name=?, email=? WHERE id=?',
-      [student.name, student.email, student.id],
-      (error) => {
-        if (error) return console.error(error);
-
-        success();
-      }
-    );
+  createChatRoom(chat: ChatRoom) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO ChatRooms (title, description, id) VALUES (?, ?, ?)',
+        [chat.title, chat.description, chat.id],
+        (error) => {
+          if (error) return reject(error);
+          resolve();
+        });
+    });
   }
+
+  deleteChatRoom(id: number) {
+    return new Promise((resolve, reject) => {
+      pool.query('DELETE FROM ChatRooms WHERE id=?', [id], (error,results) => {
+        pool.query('DELETE FROM Messages WHERE chatRoomId=?', [id], (error,results) => {
+          if (error) return reject(error);
+          resolve(results);
+        });
+        if (error) return reject(error);
+        resolve(results);
+      });
+    });
+  }
+
+  getMessages(chatRoomId: number) {
+    return new Promise<ChatMessage[]>((resolve, reject) =>{
+      pool.query('SELECT * FROM Messages WHERE chatRoomId=?', [chatRoomId], (error, results) => {
+        if (error) return reject(error);
+        resolve(results);
+      });
+    });
+  }
+
+  addMessage(message: string, chatRoomId: number) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO Messages (text, chatRoomId) VALUES (?, ?)',
+        [message, chatRoomId],
+        (error) => {
+          if (error) return reject(error);
+          resolve();
+        });
+    });
+  }
+
 }
-export let studentService = new StudentService();
+
+export let chatService = new ChatService();

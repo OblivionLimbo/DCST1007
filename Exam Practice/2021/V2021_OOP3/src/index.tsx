@@ -2,130 +2,115 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import ReactDOM from 'react-dom';
 import { NavLink, HashRouter, Route } from 'react-router-dom';
-import { Student, studentService } from './services';
+import { ChatRoom, chatService, ChatMessage} from './services';
 import { Alert, Card, Row, Column, NavBar, Button, Form } from './widgets';
 import { createHashHistory } from 'history';
 
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
 
-class Menu extends Component {
+class ChatList extends Component {
+  chatRooms: ChatRoom[] = [];
+  newChatRoom: ChatRoom = new ChatRoom();
+  search: string = '';
+
   render() {
-    return (
-      <NavBar brand="StudAdm">
-        <NavBar.Link to="/students">Students</NavBar.Link>
-      </NavBar>
-    );
+    return(
+      <>
+        <Card title="Chat Rooms">
+          <Form.Label>Søk</Form.Label>
+          <Form.Input type="text" value={this.search} onChange={(event) => (this.search = event.target.value)}/>
+          <br /><br />
+          {this.chatRooms
+          .filter((chatRoom) => (chatRoom.title.toLowerCase().includes(this.search.toLowerCase())))
+          .map((chatRoom) => (
+            <>
+              <Card title={chatRoom.title} key={chatRoom.id}>
+                <Row>
+                  <Column>{chatRoom.description}</Column>
+                </Row>
+                <Row>
+                  <Column>
+                    <Button.Light onClick={() => history.push('/chat/' + chatRoom.id)}>Gå til chat</Button.Light>
+                      {' '}
+                    <Button.Danger onClick={()=>this.delete(chatRoom.id)}>Slett Chat</Button.Danger>
+                  </Column>
+                </Row>
+              </Card>
+              <br />
+              </>
+              ))}
+        </Card>
+        <br />
+        <Card title="Nytt rom">
+          <Form.Label>Tittel</Form.Label>
+          <Form.Input type="text" value={this.newChatRoom.title} onChange={(event) => (this.newChatRoom.title = event.target.value)}/>
+          <Form.Label>Beskrivelse</Form.Label>
+          <Form.Input type="text" value={this.newChatRoom.description} onChange={(event) => (this.newChatRoom.description = event.target.value)}/>
+          <br />
+          <Button.Success onClick={() => this.add()}>Legg til</Button.Success>
+        </Card>
+      </>
+    )
+  }
+
+  add(){
+    chatService.createChatRoom(this.newChatRoom)
+    .then(() => this.mounted());
+  }
+
+  delete(id: number){
+    chatService.deleteChatRoom(id)
+    .then(() => this.mounted());
+  }
+
+  mounted(){
+    chatService.getChatRooms()
+    .then(chatRooms => this.chatRooms = chatRooms);
   }
 }
 
-class Home extends Component {
-  render() {
-    return <Card title="Welcome">Welcome to StudAdm</Card>;
-  }
-}
-
-class StudentList extends Component {
-  students: Student[] = [];
+class ChatDetails extends Component<{ match: { params: { id: number } } }> {
+  chatRoom: ChatRoom = new ChatRoom();
+  messages: ChatMessage[] = [];
+  newMessage: ChatMessage = new ChatMessage();
 
   render() {
-    return (
-      <Card title="Students">
-        {this.students.map((student) => (
-          <Row key={student.id}>
-            <Column>
-              <NavLink to={'/students/' + student.id}>{student.name}</NavLink>
-            </Column>
-          </Row>
-        ))}
-      </Card>
-    );
-  }
-
-  mounted() {
-    studentService.getStudents((students) => {
-      this.students = students;
-    });
-  }
-}
-
-class StudentDetails extends Component<{ match: { params: { id: string } } }> {
-  student = new Student();
-
-  render() {
-    return (
-      <div>
-        <Card title="Student details">
+    return(
+      <>
+        <Card title={this.chatRoom.title}>
           <Row>
-            <Column width={2}>Name:</Column>
-            <Column>{this.student.name}</Column>
-          </Row>
-          <Row>
-            <Column width={2}>Email:</Column>
-            <Column>{this.student.email}</Column>
+            <Column>{this.chatRoom.description}</Column>
+          
+            { this.messages.map((messsages) =>
+              <Row><Column>{'>'} {messsages.text}</Column></Row>
+              )
+            }
           </Row>
         </Card>
-        <Button.Light onClick={this.edit}>Edit</Button.Light>
-      </div>
-    );
-  }
-
-  mounted() {
-    studentService.getStudent(Number(this.props.match.params.id), (student) => {
-      this.student = student;
-    });
-  }
-
-  edit() {
-    history.push('/students/' + this.student.id + '/edit');
-  }
-}
-
-class StudentEdit extends Component<{ match: { params: { id: string } } }> {
-  student = new Student();
-
-  render() {
-    return (
-      <div>
-        <Card title="Edit student">
-          <Form.Label>Name:</Form.Label>
-          <Form.Input
-            type="text"
-            value={this.student.name}
-            onChange={(event) => (this.student.name = event.currentTarget.value)}
-          />
-          <Form.Label>Email:</Form.Label>
-          <Form.Input
-            type="text"
-            value={this.student.email}
-            onChange={(event) => (this.student.email = event.currentTarget.value)}
-          />
+        <br />
+        <Card title="Melding">
+          <Form.Input type="text" value={this.newMessage.text} onChange={(event) => (this.newMessage.text = event.target.value)}/>
+          <br />
+          <Button.Success onClick={() => this.addMessage()}>Send</Button.Success>
+          
         </Card>
-        <Row>
-          <Column>
-            <Button.Success onClick={this.save}>Save</Button.Success>
-          </Column>
-          <Column right>
-            <Button.Light onClick={this.cancel}>Cancel</Button.Light>
-          </Column>
-        </Row>
-      </div>
-    );
+        <Button.Light onClick={() => history.push('/')}>Tilbake</Button.Light>
+      </>
+    )
   }
 
-  mounted() {
-    studentService.getStudent(Number(this.props.match.params.id), (student) => {
-      this.student = student;
-    });
+  addMessage(){
+    console.log(this.newMessage)
+    chatService
+    .addMessage(this.newMessage.text, this.chatRoom.id)
+    .then(() => this.mounted());
   }
 
-  save() {
-    studentService.updateStudent(this.student, () => {
-      history.push('/students/' + this.props.match.params.id);
-    });
-  }
-
-  cancel() {
-    history.push('/students/' + this.props.match.params.id);
+  mounted(){
+    chatService.getChatRoom(this.props.match.params.id)
+    .then(chatRoom => this.chatRoom = chatRoom);
+    chatService.getMessages(this.props.match.params.id)
+    .then(messages => this.messages = messages);
   }
 }
 
@@ -134,11 +119,8 @@ ReactDOM.render(
     <Alert />
     <HashRouter>
       <div>
-        <Menu />
-        <Route exact path="/" component={Home} />
-        <Route exact path="/students" component={StudentList} />
-        <Route exact path="/students/:id" component={StudentDetails} />
-        <Route exact path="/students/:id/edit" component={StudentEdit} />
+        <Route exact path="/" component={ChatList} />
+        <Route path="/chat/:id" component={ChatDetails} />
       </div>
     </HashRouter>
   </div>,
