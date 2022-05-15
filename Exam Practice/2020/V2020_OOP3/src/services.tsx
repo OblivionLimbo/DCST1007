@@ -57,7 +57,7 @@ class ShowService {
   deleteShow(id: number) {
     return new Promise((resolve, reject) => {
       pool.query('DELETE FROM Shows WHERE id=?', [id], (error,results) => {
-        pool.query('DElETE FROM ShowRatings WHERE showId=?', [id], (error,results) => {
+        pool.query('DELETE FROM ShowRatings WHERE showId=?', [id], (error,results) => {
           if (error) return reject(error);
           resolve(results);
           });

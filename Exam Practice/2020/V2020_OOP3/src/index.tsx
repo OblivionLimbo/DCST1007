@@ -72,7 +72,6 @@ class ShowList extends Component {
     showService
     .getShows()
     .then((shows) => (this.shows = shows));
-    showService
 
     showService.getRatings((rating) => {
       this.ratings = rating;
