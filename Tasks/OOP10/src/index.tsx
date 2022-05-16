@@ -58,7 +58,7 @@ class StudentDetails extends Component<{ match: { params: { id: string } } }> {
 
   render() {
     return (
-      <div>
+      <>
         <Card title="Student details">
           <Row>
             <Column width={2}>Name:</Column>
@@ -74,7 +74,7 @@ class StudentDetails extends Component<{ match: { params: { id: string } } }> {
           </Row>
         </Card>
         <Button.Light onClick={this.edit}>Edit</Button.Light>
-      </div>
+      </>
     );
   }
 
@@ -98,7 +98,7 @@ class StudentEdit extends Component<{ match: { params: { id: string } } }> {
 
   render() {
     return (
-      <div>
+      <>
         <Card title="Edit student">
           <Form.Label>Name:</Form.Label>
           <Form.Input
@@ -113,13 +113,13 @@ class StudentEdit extends Component<{ match: { params: { id: string } } }> {
             onChange={(event) => (this.student.email = event.currentTarget.value)}
           />
           <Form.Label>Group:</Form.Label>
-          <br></br>
+          <br />
             <select value={this.student.groupId} onChange={(event) => (this.student.groupId = parseInt(event.currentTarget.value))}>
               {this.groups.map((group) => (
                 <option key={group.id} value={group.id}>{group.name}</option>
               ))}
             </select>
-          <br></br>
+          <br/>
         </Card>
         <Row>
           <Column>
@@ -132,7 +132,7 @@ class StudentEdit extends Component<{ match: { params: { id: string } } }> {
             <Button.Danger onClick={this.delete}>Delete</Button.Danger>
           </Column>
         </Row>
-      </div>
+      </>
     );
   }
 
@@ -168,7 +168,7 @@ class CreateStudent extends Component {
 
   render() {
     return (
-      <div>
+      <>
         <Card title="Create student">
           <Form.Label>Name:</Form.Label>
           <Form.Input
@@ -183,7 +183,7 @@ class CreateStudent extends Component {
             onChange={(event) => (this.student.email = event.currentTarget.value)}
           />
           <Form.Label>Group:</Form.Label>
-          <br></br>
+          <br />
             <select value={this.student.groupId} onChange={(event) => (this.student.groupId = parseInt(event.currentTarget.value))}>
               {this.groups.map((groups) => (
                 <option key={groups.id} value={groups.id}>
@@ -200,7 +200,7 @@ class CreateStudent extends Component {
             <Button.Light onClick={this.cancel}>Cancel</Button.Light>
           </Column>
         </Row>
-      </div>
+      </>
     );
   }
 
