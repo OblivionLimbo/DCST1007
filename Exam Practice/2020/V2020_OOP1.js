@@ -1,15 +1,7 @@
 class Circle {
-    constructor(radius, color) {
-        if(radius <= 0 || radius === undefined || isNaN(radius)){
-            this.radius = 1;
-        } else {
-            this.radius = radius;
-        }
-        if(color === undefined || color === ''){
-            this.color = "red";
-        } else{
-            this.color = color;
-        }
+    constructor(radius) {
+        (radius <= 0 || radius === undefined || isNaN(radius)) ? this.radius = 1 : this.radius = radius;
+        this.color = 'red'
     }
     area() {
         return (Math.PI * this.radius * this.radius).toFixed(2);
@@ -77,10 +69,13 @@ document.body.appendChild(circleBtn);
 document.body.appendChild(circleInfo);
 
 // Cube
-
-class Cube {
-    constructor(Cicle) {
-        let area = Cicle.area();
+class Cube{
+    constructor(circle) {
+        let area = circle.area();
         this.side = Math.sqrt(area / 6);
     }
 }
+
+let cubeCircle = new Circle(4)
+let cube = new Cube(cubeCircle);
+console.log(cube);

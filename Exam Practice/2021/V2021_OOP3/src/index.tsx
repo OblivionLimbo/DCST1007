@@ -55,17 +55,20 @@ class ChatList extends Component {
 
   add(){
     chatService.createChatRoom(this.newChatRoom)
-    .then(() => this.mounted());
+    .then(() => this.mounted())
+    .catch(err => console.error(err));
   }
 
   delete(id: number){
     chatService.deleteChatRoom(id)
-    .then(() => this.mounted());
+    .then(() => this.mounted())
+    .catch(err => console.error(err));
   }
 
   mounted(){
     chatService.getChatRooms()
-    .then(chatRooms => this.chatRooms = chatRooms);
+    .then(chatRooms => this.chatRooms = chatRooms)
+    .catch(err => console.error(err));
   }
 }
 
@@ -80,7 +83,6 @@ class ChatDetails extends Component<{ match: { params: { id: number } } }> {
         <Card title={this.chatRoom.title}>
           <Row>
             <Column>{this.chatRoom.description}</Column>
-          
             { this.messages.map((messsages) =>
               <Row><Column>{'>'} {messsages.text}</Column></Row>
               )
@@ -92,7 +94,6 @@ class ChatDetails extends Component<{ match: { params: { id: number } } }> {
           <Form.Input type="text" value={this.newMessage.text} onChange={(event) => (this.newMessage.text = event.target.value)}/>
           <br />
           <Button.Success onClick={() => this.addMessage()}>Send</Button.Success>
-          
         </Card>
         <Button.Light onClick={() => history.push('/')}>Tilbake</Button.Light>
       </>
@@ -103,14 +104,17 @@ class ChatDetails extends Component<{ match: { params: { id: number } } }> {
     console.log(this.newMessage)
     chatService
     .addMessage(this.newMessage.text, this.chatRoom.id)
-    .then(() => this.mounted());
+    .then(() => this.mounted())
+    .catch(err => console.error(err));
   }
 
   mounted(){
     chatService.getChatRoom(this.props.match.params.id)
-    .then(chatRoom => this.chatRoom = chatRoom);
+    .then(chatRoom => this.chatRoom = chatRoom)
+    .catch(err => console.error(err));
     chatService.getMessages(this.props.match.params.id)
-    .then(messages => this.messages = messages);
+    .then(messages => this.messages = messages)
+    .catch(err => console.error(err));
   }
 }
 

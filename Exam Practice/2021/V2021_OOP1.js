@@ -40,7 +40,6 @@ let checkInfo = document.createElement("p");
     checkInfo.id = "checkInfo";
 document.body.appendChild(checkInfo);
 
-
     checkBtn.onclick = () => {
         let antallpassasjerer = document.getElementById("antallpassasjerer").value;
         if (buss1.sjekkAntall(antallpassasjerer)) {
@@ -50,9 +49,3 @@ document.body.appendChild(checkInfo);
             checkInfo.innerText += `Buss 1 cannot hold ${antallpassasjerer} passengers. \n\n`;
         }
     }
-
-
-
-
-
-

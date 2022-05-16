@@ -79,5 +79,4 @@ chessBoard[7][7] = new Rook(7, 7, "black");
 for (let i = 0; i < 8; i++) {
     chessBoard[6][i] = new Pawn(i, 6, "black");
 }
-
 console.table(chessBoard)

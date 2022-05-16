@@ -22,12 +22,13 @@ class ShowService {
     });
   }
 
-  getShow(id: number, success: (student: Show) => void) {
+  getShow(id: number) {
+    return new Promise<Show>((resolve, reject) => {
     pool.query('SELECT * FROM Shows WHERE id=?', [id], (error, results) => {
-      if (error) return console.error(error);
+      if (error) return reject(error);
 
-      success(results[0]);
-    });
+      resolve(results[0]);
+    });});
   }
 
   updateShow(show: Show) {
@@ -43,13 +44,13 @@ class ShowService {
   }
 
   createShow(show: Show) {
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<Show>((resolve, reject) => {
     pool.query(
       'INSERT INTO Shows (title, description, id) VALUES (?, ?, ?)',
       [show.title, show.description, show.id],
-      (error) => {
+      (error,results) => {
         if (error) return reject(error);
-        resolve();
+        resolve(results);
       });
     });
   }
@@ -67,24 +68,26 @@ class ShowService {
     });
   }
 
-  getRatings(success: (rating: any) => void) {
+  getRatings() {
+    return new Promise<Rating[]>((resolve, reject) => {
     pool.query('SELECT rating, showId FROM ShowRatings', (error, results) => {
-      if (error) return console.error(error);
+      if (error) return reject(error);
 
-      success(results);
-    });
+      resolve(results);
+    })});
   }
 
-  addRating(rating: number, showId: number, success: () => void) {
+  addRating(rating: number, showId: number) {
+    return new Promise<void>((resolve, reject) => {
     pool.query(
       'INSERT INTO ShowRatings (rating, showId) VALUES (?, ?)',
       [rating, showId],
       (error) => {
-        if (error) return console.error(error);
+        if (error) return reject(error);
 
-        success();
+        resolve();
       }
-    )
+    )});
   }
 
 

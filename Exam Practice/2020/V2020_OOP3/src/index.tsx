@@ -41,7 +41,8 @@ class ShowList extends Component {
                   Gi terningkast <br />
                   { [1,2,3,4,5,6].map((rates)=>(
                     <img key={rates} src={rates+'.png'} width={'60vh'} style={{cursor:'pointer'}} onClick={() => this.rate(rates,show.id)}/>
-                  ))}
+                  ))
+                  }
                   {' '}
                 </Column>
               </Row>
@@ -60,22 +61,21 @@ class ShowList extends Component {
   }
 
   rate(rating: number,showId: number){
-    showService.addRating(rating, showId, () => {
-      console.log("Rating added");
-      showService.getRatings((rating) => {
-        this.ratings = rating;
-      });
-    });
+    showService
+    .addRating(rating, showId)
+    .then(() => {this.mounted()});
   }
 
   mounted() {
     showService
     .getShows()
-    .then((shows) => (this.shows = shows));
+    .then((shows) => (this.shows = shows))
+    .catch(err => console.error(err));
 
-    showService.getRatings((rating) => {
-      this.ratings = rating;
-    });
+    showService
+    .getRatings()
+    .then((rating) => (this.ratings = rating))
+    .catch(err => console.error(err));
   }
 }
 
@@ -107,7 +107,8 @@ class ShowCreate extends Component {
   add() {
     showService
     .createShow(this.show)
-    .then(() => history.push('/'));
+    .then(() => history.push('/'))
+    .catch(err => console.error(err));
   }
 }
 
@@ -129,26 +130,32 @@ class ShowEdit extends Component<{ match: { params: { id: number } } }> {
               {' '}
               <Button.Light onClick={() => history.push('/')}>Avbryt</Button.Light>
               {' '}
-              <Button.Danger onClick={() => this.delete()}>Slett</Button.Danger>
+              <Button.Danger onClick={() => this.handleDelete()}>Slett</Button.Danger>
             </Column>
           </Row>         
       </Card>
       </>
     )
   }
-  delete() {
-    showService.deleteShow(this.show.id)
-    .then(() => history.push('/'));
+  handleDelete() {
+    { confirm('Vil du slette programmet?') ?
+      showService.deleteShow(this.show.id)
+      .then(() => history.push('/'))
+      .catch(err => console.error(err))
+     : console.log('cancel');
   }
+}
 
   edit() {
     showService.updateShow(this.show)
-    .then(() => history.push('/'));
+    .then(() => history.push('/'))
+    .catch(err => console.error(err));
   }
   mounted(){
-    showService.getShow(this.props.match.params.id, (show) => {
-      this.show = show;
-    });
+    showService
+    .getShow(this.props.match.params.id)
+    .then((show) => (this.show = show))
+    .catch(err => console.error(err));
   }
 }
 
