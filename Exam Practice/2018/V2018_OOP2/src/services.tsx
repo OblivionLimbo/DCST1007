@@ -1,38 +1,39 @@
 import { pool } from './mysql-pool';
 
-export class Student {
-  id: number = 0;
+export class Score {
+  id: number = 0;  
   name: string = '';
-  email: string = '';
+  score: number = 0; 
 }
 
-class StudentService {
-  getStudents(success: (students: Student[]) => void) {
-    pool.query('SELECT * FROM Students', (error, results) => {
-      if (error) return console.error(error);
+class ScoreService {
 
-      success(results);
+  getScores(){
+    return new Promise<Score[]>((resolve, reject) => {
+      pool.query('SELECT * FROM Scores', (err, rows) => {
+        if(err) reject(err);
+        else resolve(rows);
+      });
     });
   }
 
-  getStudent(id: number, success: (student: Student) => void) {
-    pool.query('SELECT * FROM Students WHERE id=?', [id], (error, results) => {
-      if (error) return console.error(error);
-
-      success(results[0]);
+  updateScore(score: number, id: number){
+    return new Promise<void>((resolve, reject) => {
+      pool.query('UPDATE Scores SET score = ? WHERE id = ?', [score, id], (err, rows) => {
+        if(err) reject(err);
+        else resolve();
+      });
     });
   }
 
-  updateStudent(student: Student, success: () => void) {
-    pool.query(
-      'UPDATE Students SET name=?, email=? WHERE id=?',
-      [student.name, student.email, student.id],
-      (error) => {
-        if (error) return console.error(error);
-
-        success();
-      }
-    );
+  resetScore(){
+    return new Promise<void>((resolve, reject) => {
+      pool.query('UPDATE Scores SET score = 0', (err, rows) => {
+        if(err) reject(err);
+        else resolve();
+      });
+    });
   }
+
 }
-export let studentService = new StudentService();
+export let scoreService = new ScoreService();
