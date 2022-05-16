@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import ReactDOM from 'react-dom';
 import { NavLink, HashRouter, Route } from 'react-router-dom';
-import { Show, showService } from './services';
+import { Show, showService, Rating } from './services';
 import { Alert, Card, Row, Column, NavBar, Button, Form } from './widgets';
 import { createHashHistory } from 'history';
 
@@ -10,108 +10,147 @@ const history = createHashHistory(); // Use history.push(...) to programmaticall
 
 class ShowList extends Component {
   shows: Show[] = [];
+  ratings: Rating[] = [];
+  search: string = '';
 
   render() {
     return (
       <>
       <Card title="Barne-TV Programmer">
-      {this.shows.map((show) => (
-            <Card title={show.title}>
-              <div>{show.title}</div>
+      <Button.Success onClick={() => history.push('/create')}>Legg til program</Button.Success>
+      <br />
+      <Form.Label>Søk</Form.Label>
+      <Form.Input type="text" value={this.search} onChange={(event) => (this.search = event.target.value)}/>
+      <br /><br />
+      {this.shows
+      .filter((show) => (show.title.toLowerCase().includes(this.search.toLowerCase())))
+      .map((show) => (
+        <>
+            <Card title={show.title} key={show.id}>
+              <Row>
+                <Column>{show.description}</Column>
+                </Row>
+              <Row>
+                <Column>Terningkast: {''}
+                  { this.ratings
+                    .filter((showRating) => (showRating.showId === show.id))
+                    .reduce((average, showRating, _index, ratings) => (average + showRating.rating / ratings.length), 0).toFixed(2)
+                  }
+                </Column>
+                <Column>
+                  Gi terningkast <br />
+                  { [1,2,3,4,5,6].map((rates)=>(
+                    <img key={rates} src={rates+'.png'} width={'60vh'} style={{cursor:'pointer'}} onClick={() => this.rate(rates,show.id)}/>
+                  ))}
+                  {' '}
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Button.Light onClick={() => history.push('/shows/' + show.id)}>Rediger</Button.Light>
+                </Column>
+              </Row>
             </Card>
+            <br />
+            </>
           ))}
       </Card>
       </>
     );
   }
 
+  rate(rating: number,showId: number){
+    showService.addRating(rating, showId, () => {
+      console.log("Rating added");
+      showService.getRatings((rating) => {
+        this.ratings = rating;
+      });
+    });
+  }
+
   mounted() {
-    showService.getShows((shows) => {
-      this.shows = shows;
+    showService
+    .getShows()
+    .then((shows) => (this.shows = shows));
+
+    showService.getRatings((rating) => {
+      this.ratings = rating;
     });
   }
 }
 
-// class StudentDetails extends Component<{ match: { params: { id: string } } }> {
-//   student = new Student();
+class ShowCreate extends Component {
+  show: Show = new Show();
 
-//   render() {
-//     return (
-//       <div>
-//         <Card title="Student details">
-//           <Row>
-//             <Column width={2}>Name:</Column>
-//             <Column>{this.student.name}</Column>
-//           </Row>
-//           <Row>
-//             <Column width={2}>Email:</Column>
-//             <Column>{this.student.email}</Column>
-//           </Row>
-//         </Card>
-//         <Button.Light onClick={this.edit}>Edit</Button.Light>
-//       </div>
-//     );
-//   }
+  render(){
+    return(
+      <>
+      <Card title="Legg til program">
+          <Form.Label>Tittel</Form.Label>
+          <Form.Input type="text" value={this.show.title} onChange={(event) => (this.show.title = event.target.value)} />
+          <Form.Label>Beskrivelse</Form.Label>
+          <Form.Input type="text" value={this.show.description} onChange={(event) => (this.show.description = event.target.value)} />
+          <br />
+          <Row>
+            <Column>
+              <Button.Success onClick={() => this.add()}>Legg til</Button.Success>
+              {' '}
+              <Button.Danger onClick={() => history.push('/')}>Avbryt</Button.Danger>
+            </Column>
+          </Row>
+      </Card>
 
-//   mounted() {
-//     studentService.getStudent(Number(this.props.match.params.id), (student) => {
-//       this.student = student;
-//     });
-//   }
+      </>
+    )
+  }
 
-//   edit() {
-//     history.push('/students/' + this.student.id + '/edit');
-//   }
-// }
+  add() {
+    showService
+    .createShow(this.show)
+    .then(() => history.push('/'));
+  }
+}
 
-// class StudentEdit extends Component<{ match: { params: { id: string } } }> {
-//   student = new Student();
+class ShowEdit extends Component<{ match: { params: { id: number } } }> {
+  show: Show = new Show();
 
-//   render() {
-//     return (
-//       <div>
-//         <Card title="Edit student">
-//           <Form.Label>Name:</Form.Label>
-//           <Form.Input
-//             type="text"
-//             value={this.student.name}
-//             onChange={(event) => (this.student.name = event.currentTarget.value)}
-//           />
-//           <Form.Label>Email:</Form.Label>
-//           <Form.Input
-//             type="text"
-//             value={this.student.email}
-//             onChange={(event) => (this.student.email = event.currentTarget.value)}
-//           />
-//         </Card>
-//         <Row>
-//           <Column>
-//             <Button.Success onClick={this.save}>Save</Button.Success>
-//           </Column>
-//           <Column right>
-//             <Button.Light onClick={this.cancel}>Cancel</Button.Light>
-//           </Column>
-//         </Row>
-//       </div>
-//     );
-//   }
+  render(){
+    return(
+      <>
+      <Card title="Rediger program">
+          <Form.Label>Tittel</Form.Label>
+          <Form.Input type="text" value={this.show.title} onChange={(event) => (this.show.title = event.target.value)} />
+          <Form.Label>Beskrivelse</Form.Label>
+          <Form.Input type="text" value={this.show.description} onChange={(event) => (this.show.description = event.target.value)} />
+          <br />
+          <Row>
+            <Column>
+              <Button.Success onClick={() => this.edit()}>Lagre</Button.Success>
+              {' '}
+              <Button.Light onClick={() => history.push('/')}>Avbryt</Button.Light>
+              {' '}
+              <Button.Danger onClick={() => this.delete()}>Slett</Button.Danger>
+            </Column>
+          </Row>         
+      </Card>
+      </>
+    )
+  }
+  delete() {
+    showService.deleteShow(this.show.id)
+    .then(() => history.push('/'));
+  }
 
-//   mounted() {
-//     studentService.getStudent(Number(this.props.match.params.id), (student) => {
-//       this.student = student;
-//     });
-//   }
-
-//   save() {
-//     studentService.updateStudent(this.student, () => {
-//       history.push('/students/' + this.props.match.params.id);
-//     });
-//   }
-
-//   cancel() {
-//     history.push('/students/' + this.props.match.params.id);
-//   }
-// }
+  edit() {
+    showService.updateShow(this.show)
+    .then(() => history.push('/'));
+  }
+  mounted(){
+    showService.getShow(this.props.match.params.id, (show) => {
+      this.show = show;
+    });
+  }
+}
 
 ReactDOM.render(
   <div>
@@ -119,6 +158,8 @@ ReactDOM.render(
     <HashRouter>
       <div>
         <Route exact path="/" component={ShowList} />
+        <Route exact path="/shows/:id" component={ShowEdit} />
+        <Route exact path="/create" component={ShowCreate} />
       </div>
     </HashRouter>
   </div>,
