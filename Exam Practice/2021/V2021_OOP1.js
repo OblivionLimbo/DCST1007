@@ -20,6 +20,9 @@ class Buss extends Kjoretoy {
         }
         return true;
     }
+    leiePris(){
+        
+    }
 }
 
 let buss1 = new Buss(90, 200, 65);
