@@ -1,0 +1,1 @@
+CREATE TABLE ShoppingList (id INT NOT NULL AUTO_INCREMENT, name TEXT, count INT, collected BOOLEAN, PRIMARY KEY (id));
