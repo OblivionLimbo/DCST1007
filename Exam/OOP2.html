@@ -96,6 +96,7 @@ let resetBtn = document.createElement('button');
 resetBtn.innerText = 'Reset';
 resetBtn.id = 'reset';
 resetBtn.onclick = () => {
+    diceArr = [];
     count = 1;
     document.getElementById('result').innerText = '';
     document.getElementById('reset').style.visibility = 'hidden';
@@ -117,9 +118,6 @@ function final(x){
     document.getElementById('buttonBox').style.visibility = 'hidden';
     document.getElementById('diceInfo').style.visibility = 'hidden';
 }
-
-
-
 
 </script>
     

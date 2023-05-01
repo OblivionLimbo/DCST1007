@@ -48,7 +48,6 @@ class StudentList extends Component {
   mounted() {
     pool.query('SELECT id, name FROM Students', (error, results) => {
       if (error) return console.error(error); // If error, show error in console (in red text) and return
-
       this.students = results;
     });
   }

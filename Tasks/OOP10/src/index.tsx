@@ -248,7 +248,7 @@ class GroupList extends Component <{ match: { params: { id: string } } }> {
   }
 }
 
-class GroupDetails extends Component<{ match: { params: { id: string } } }> {
+class GroupDetails extends Component <{ match: { params: { id: string } } }> {
   group = new Group();
   members: Student[] = [];
   leader: any = [];
