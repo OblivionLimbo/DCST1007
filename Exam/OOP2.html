@@ -57,12 +57,14 @@
     buttonBox.id = 'buttonBox';
     buttonBox.style.visibility = 'hidden';
     document.body.appendChild(buttonBox);
+
     valueArr.forEach(value => {
-    let button = document.createElement('button');
-    button.innerText = value;
-    button.onclick = () => reRoll(value);
-    document.getElementById('buttonBox').appendChild(button);
-    document.body.appendChild(startButton);});
+        let button = document.createElement('button');
+        button.innerText = value;
+        button.onclick = () => reRoll(value);
+        document.getElementById('buttonBox').appendChild(button);
+        document.body.appendChild(startButton);
+    });
 
     // defining count to keep track of rerolls
     let count = 1;
